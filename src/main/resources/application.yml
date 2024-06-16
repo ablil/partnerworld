@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: partner world
+  cloud:
+    gcp:
+      datastore:
+        project-id: gcp-training-playground-405915
+        database-id: partnerworld
+        namespace: de
