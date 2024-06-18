@@ -1,5 +1,7 @@
 package io.ablil.configuration.persistence
 
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField
+import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue
 import com.google.cloud.spring.data.datastore.core.mapping.Entity
 import io.ablil.configuration.web.ConfigurationDto
 import io.ablil.configuration.web.CouponDto
@@ -15,8 +17,8 @@ data class PartnerConfiguration(
     val shortname: String,
     val displayName: String,
     val iconUrl: String = "https://placehold.co/50",
-    val navigations: List<Navigation>,
     val status: ConfigurationStatus = ConfigurationStatus.ENABLED,
+    var navigations: List<Navigation>?,
 
     @LastModifiedDate
     var updatedAt: Date = Date.from(Instant.now()),
@@ -34,15 +36,15 @@ data class PartnerConfiguration(
                     when (it) {
                         is FeedDto -> FeedNavigation(
                             label = it.label,
-                            type = it.navigationType,
-                            id = UUID.randomUUID().toString()
+                            identifier = UUID.randomUUID().toString(),
+                            type = NavigationType.STATIC
                         )
 
                         is CouponDto -> CouponNavigation(
                             label = it.label,
-                            type = it.navigationType,
                             coupon = it.coupon,
-                            id = UUID.randomUUID().toString()
+                            identifier = UUID.randomUUID().toString(),
+                            type = NavigationType.STATIC
                         )
 
                         else -> error("unknown type")
@@ -53,26 +55,29 @@ data class PartnerConfiguration(
     }
 }
 
-@Entity(name = "navigations")
-//@DiscriminatorField(field = "type")
-abstract class Navigation {
-    abstract val label: String
-    abstract val type: NavigationType
-    abstract var id: String?
-}
 
-//@DiscriminatorValue("feed")
-data class FeedNavigation(override val label: String, override val type: NavigationType, override var id: String?) :
-    Navigation()
+@Entity(name = "navigation")
+@DiscriminatorField(field = "navigation_type")
+abstract class Navigation(
+    open val label: String,
+    open val type: NavigationType,
+    open val identifier: String,
+)
 
-//@DiscriminatorValue("coupon")
-data class CouponNavigation(
+@DiscriminatorValue("feed")
+data class FeedNavigation(
     override val label: String,
+    override val identifier: String,
     override val type: NavigationType,
-    val coupon: String,
-    override var id: String?
-) : Navigation()
+) : Navigation(label, type, identifier)
 
+@DiscriminatorValue("coupon")
+data class CouponNavigation(
+    val coupon: String,
+    override val label: String,
+    override val identifier: String,
+    override val type: NavigationType
+) : Navigation(label, type, identifier)
 
 enum class NavigationType {
     DYNAMIC, STATIC

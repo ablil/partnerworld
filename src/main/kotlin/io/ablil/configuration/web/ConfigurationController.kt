@@ -21,7 +21,8 @@ class ConfigurationController(val repository: PartnerConfigurationRepository) {
 
     @GetMapping("/{shortname}")
     fun getConfiguration(@PathVariable shortname: String): ResponseEntity<PartnerConfiguration?> {
-        return repository.findByShortnameAndStatus(shortname).let { ResponseEntity.ofNullable(it) }
+        val configuration = repository.findByShortnameAndStatus(shortname)
+        return configuration.let { ResponseEntity.ofNullable(it) }
     }
 
     @PostMapping

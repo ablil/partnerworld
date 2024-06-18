@@ -7,3 +7,6 @@ spring:
         project-id: gcp-training-playground-405915
         database-id: partnerworld
         namespace: de
+logging:
+  level:
+    com.google.cloud.datastore: DEBUG
