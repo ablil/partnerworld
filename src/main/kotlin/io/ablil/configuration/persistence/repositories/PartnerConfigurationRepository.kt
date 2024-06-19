@@ -1,8 +1,8 @@
-package io.ablil.configuration.persistence
+package io.ablil.configuration.persistence.repositories
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository
-import com.google.cloud.spring.data.datastore.repository.query.Query
-import org.springframework.data.repository.query.Param
+import io.ablil.configuration.persistence.entities.ConfigurationStatus
+import io.ablil.configuration.persistence.entities.PartnerConfiguration
 
 interface PartnerConfigurationRepository: DatastoreRepository<PartnerConfiguration, Long> {
 

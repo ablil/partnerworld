@@ -1,4 +1,4 @@
-package io.ablil.configuration.persistence
+package io.ablil.configuration.persistence.entities
 
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue

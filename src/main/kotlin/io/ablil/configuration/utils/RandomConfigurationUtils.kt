@@ -1,8 +1,6 @@
 package io.ablil.configuration.utils
 
-import io.ablil.configuration.persistence.FeedNavigation
-import io.ablil.configuration.persistence.Navigation
-import io.ablil.configuration.persistence.PartnerConfiguration
+import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import org.apache.commons.lang3.RandomStringUtils
 
 object RandomConfigurationUtils {

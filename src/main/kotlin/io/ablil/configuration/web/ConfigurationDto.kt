@@ -3,7 +3,7 @@ package io.ablil.configuration.web
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import io.ablil.configuration.persistence.NavigationType
+import io.ablil.configuration.persistence.entities.NavigationType
 
 data class ConfigurationDto(
     val shortname: String,
