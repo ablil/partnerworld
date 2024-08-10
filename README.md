@@ -32,3 +32,13 @@ Run:
 ```shell
 ./gradlew bootRun
 ```
+
+
+### Generate sample data
+
+You can create random configuration through REST API call, as follows:
+```shell
+curl -X POST http://0.0.0.0:8080/configurations/random
+```
+
+*For ease of use, this endpoint is ready-to-use on `http/configurations.http`*

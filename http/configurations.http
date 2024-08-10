@@ -1,0 +1,43 @@
+@auditor = ablil
+
+# Get all configurations
+GET http://localhost:8080/configurations
+
+### generate random configuration
+POST http://localhost:8080/configurations/random
+
+### create configuration
+POST http://localhost:8080/configurations
+Content-Type: application/json
+x-auditor: {{auditor}}
+
+{
+  "displayName": "{{$random.alphabetic(10}}",
+  "shortname": "lp{{$random.integer}}",
+  "navigations": [
+    {
+      "type": "feed",
+      "label": "my feed",
+      "navigationType": "DYNAMIC"
+    },
+    {
+      "type": "coupon",
+      "label": "my coupon",
+      "navigationType": "DYNAMIC",
+      "coupon": "voucher"
+    }
+  ]
+}
+
+### delete configuration
+< {%
+    request.variables.set("shortname", "lp440")
+%}
+DELETE http://localhost:8080/configurations/{{shortname}}
+x-Auditor: khalil
+
+### get configuration by shortname
+< {%
+    request.variables.set("shortname", "lp71")
+%}
+GET http://localhost:8080/configurations/{{shortname}}

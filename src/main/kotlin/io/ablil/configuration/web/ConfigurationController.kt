@@ -3,6 +3,7 @@ package io.ablil.configuration.web
 import io.ablil.configuration.persistence.entities.ConfigurationStatus
 import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import io.ablil.configuration.persistence.repositories.PartnerConfigurationRepository
+import io.ablil.configuration.utils.RandomConfigurationUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -21,6 +22,9 @@ class ConfigurationController(val repository: PartnerConfigurationRepository) {
 
     @GetMapping
     fun getAll(): List<PartnerConfiguration> = repository.findAll().toList()
+
+    @PostMapping("/random")
+    fun createRandomConfiguration(): PartnerConfiguration = repository.save(RandomConfigurationUtils.random())
 
     @GetMapping("/{shortname}")
     fun getConfiguration(@PathVariable shortname: String): ResponseEntity<PartnerConfiguration?> {
