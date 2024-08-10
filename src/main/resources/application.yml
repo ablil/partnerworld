@@ -4,8 +4,8 @@ spring:
   cloud:
     gcp:
       datastore:
-        project-id: gcp-training-playground-405915
-        database-id: partnerworld
+        host: 0.0.0.0:8081
+        project-id: myproject
         namespace: de
 logging:
   level:
