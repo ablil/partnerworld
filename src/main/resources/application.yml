@@ -10,3 +10,8 @@ spring:
 logging:
   level:
     com.google.cloud.datastore: DEBUG
+
+# custom properties
+custom:
+  auditing:
+    enabled: false

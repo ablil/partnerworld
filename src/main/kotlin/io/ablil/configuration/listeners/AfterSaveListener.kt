@@ -7,10 +7,12 @@ import io.ablil.configuration.persistence.entities.EventType
 import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import io.ablil.configuration.persistence.repositories.ConfigurationHistoryRepository
 import io.ablil.configuration.utils.logger
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 
 @Component
+@ConditionalOnProperty(value = ["custom.auditing.enabled"], havingValue = "true")
 class AfterSaveListener(val repository: ConfigurationHistoryRepository, val objectMapper: ObjectMapper) :
     ApplicationListener<AfterSaveEvent> {
 
