@@ -19,6 +19,7 @@ data class PartnerConfiguration(
     val iconUrl: String = "https://placehold.co/50",
     val status: ConfigurationStatus = ConfigurationStatus.ENABLED,
     var navigations: List<Navigation>?,
+    var metadata: List<ConfigurationMetadata>? = null,
 
     @LastModifiedDate
     var updatedAt: Date = Date.from(Instant.now()),
@@ -49,7 +50,8 @@ data class PartnerConfiguration(
 
                         else -> error("unknown type")
                     }
-                }
+                },
+                metadata = dto.alternativeShortnames?.map { ConfigurationMetadata(it, null) }
             )
         }
     }
@@ -86,3 +88,6 @@ enum class NavigationType {
 enum class ConfigurationStatus {
     ENABLED, DISABLED
 }
+
+@Entity
+data class ConfigurationMetadata(val shortname: String, val description: String?)

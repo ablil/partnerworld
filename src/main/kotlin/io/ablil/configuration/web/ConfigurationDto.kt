@@ -8,7 +8,8 @@ import io.ablil.configuration.persistence.entities.NavigationType
 data class ConfigurationDto(
     val shortname: String,
     val displayName: String,
-    val navigations: List<NavigationDto>
+    val navigations: List<NavigationDto>,
+    val alternativeShortnames: List<String>?
 )
 
 

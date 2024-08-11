@@ -10,4 +10,6 @@ object RandomConfigurationUtils {
         displayName = RandomStringUtils.randomAlphabetic(20),
         navigations = listOf()
     )
+
+    fun random(shortname: String): PartnerConfiguration = random().copy(shortname = shortname)
 }
