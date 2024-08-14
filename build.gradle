@@ -35,6 +35,12 @@ kotlin {
 	}
 }
 
+tasks {
+	test {
+		systemProperty("spring.profiles.active", "test")
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

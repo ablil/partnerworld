@@ -1,9 +1,7 @@
 package io.ablil.configuration.persistence.repositories
 
-import com.google.cloud.datastore.Key
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository
 import com.google.cloud.spring.data.datastore.repository.query.Query
-import io.ablil.configuration.persistence.entities.ConfigurationMetadata
 import io.ablil.configuration.persistence.entities.ConfigurationStatus
 import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import org.springframework.data.repository.query.Param
@@ -11,8 +9,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Long> {
-
-    fun findByShortname(shortname: String): PartnerConfiguration
 
 
     fun findByShortnameAndStatus(
