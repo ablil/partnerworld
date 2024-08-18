@@ -19,14 +19,24 @@ repositories {
 }
 
 dependencies {
-	implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:5.4.1")
-	implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// kotlin
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+
+	// spring
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// gcp
+	implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:5.4.1")
+	implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
+
+
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
+	implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 }
 
 kotlin {

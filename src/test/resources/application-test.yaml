@@ -4,4 +4,10 @@ spring:
       datastore:
         project-id: myproject
         host: 0.0.0.0:8081
+  main:
+    allow-bean-definition-overriding: true
 
+
+logging:
+  level:
+    org.springframework.context: DEBUG

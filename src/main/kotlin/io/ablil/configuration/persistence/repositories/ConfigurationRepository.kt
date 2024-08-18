@@ -4,10 +4,16 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository
 import com.google.cloud.spring.data.datastore.repository.query.Query
 import io.ablil.configuration.persistence.entities.ConfigurationStatus
 import io.ablil.configuration.persistence.entities.PartnerConfiguration
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.cache.CacheManager
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
+import org.springframework.context.annotation.Primary
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
-@Repository
+@Repository("configurationRepository")
 interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Long> {
 
 
@@ -22,4 +28,30 @@ interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Lo
         @Param("shortname") shortname: String,
         @Param("status") status: ConfigurationStatus = ConfigurationStatus.ENABLED
     ): PartnerConfiguration?
+}
+
+@Repository
+@Primary
+class ConfigurationRepositoryDecorator(
+    val cacheManager: CacheManager,
+    @Qualifier("configurationRepository") private val repository: ConfigurationRepository
+) :
+    ConfigurationRepository by repository {
+
+    @Cacheable("configurations", key = "#shortname", unless = "#result == null")
+    override fun queryByShortnameAndStatus(shortname: String, status: ConfigurationStatus): PartnerConfiguration? {
+        return repository.queryByShortnameAndStatus(shortname, status)
+    }
+
+    @CacheEvict("configurations", key = "#entity.shortname")
+    override fun <S : PartnerConfiguration?> save(entity: S & Any): S & Any {
+        return repository.save(entity).also { it.metadata?.forEach { m -> evictCache(m.shortname) } }
+    }
+
+    @CacheEvict("configurations", key = "#entity.shortname")
+    override fun delete(entity: PartnerConfiguration) {
+        repository.delete(entity).also { entity.metadata?.forEach { evictCache(it.shortname) } }
+    }
+
+    private fun evictCache(key: String) = cacheManager.getCache("configurations")?.evict(key)
 }

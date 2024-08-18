@@ -1,15 +1,20 @@
+
 spring:
   application:
     name: partner world
+  cache:
+    type: caffeine
   cloud:
     gcp:
       datastore:
-#        host: 0.0.0.0:8081
+        host: 0.0.0.0:8081
         project-id: gcp-training-playground-405915
         database-id: partnerworld
 logging:
   level:
+    io.ablil: DEBUG
     com.google.cloud.datastore: DEBUG
+    org.springframework.cache: TRACE
 
 # custom properties
 custom:

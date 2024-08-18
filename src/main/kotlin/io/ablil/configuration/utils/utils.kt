@@ -5,3 +5,5 @@ import org.slf4j.LoggerFactory
 
 
 fun <T : Any> T.logger(): Lazy<Logger> = lazy { LoggerFactory.getLogger(this::class.java) }
+
+fun <T : Any?> T.onNull(callback: () -> Unit): T = this.also { if (it == null) callback.invoke() }

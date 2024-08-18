@@ -32,24 +32,21 @@ class ConfigurationController(val repository: ConfigurationRepository) {
 
     @GetMapping("/{shortname}")
     fun getConfiguration(@PathVariable shortname: String): ResponseEntity<PartnerConfiguration?> {
-        return fetchConfiguration(shortname).let { ResponseEntity.ofNullable(it) }
+        return repository.queryByShortnameAndStatus(shortname).let { ResponseEntity.ofNullable(it) }
     }
-
-    private fun fetchConfiguration(shortname: String): PartnerConfiguration? =
-        repository.queryByShortnameAndStatus(shortname)
 
     @PostMapping
     fun createConfiguration(@RequestBody body: ConfigurationDto): ResponseEntity<PartnerConfiguration> {
-        fetchConfiguration(body.shortname)?.let { return ResponseEntity.status(HttpStatus.CONFLICT).build() }
+        repository.queryByShortnameAndStatus(body.shortname)
+            ?.let { return ResponseEntity.status(HttpStatus.CONFLICT).build() }
         return ResponseEntity.created(URI.create("/configurations/${body.shortname}"))
             .body(repository.save(PartnerConfiguration.from(body)))
     }
 
     @DeleteMapping("/{shortname}")
     fun deleteConfiguration(@PathVariable shortname: String) {
-        fetchConfiguration(shortname)?.also {
-            repository.delete(it)
-        } ?: logger.warn("configuration {} not found", shortname)
+        repository.queryByShortnameAndStatus(shortname)?.also { repository.delete(it) }
+            ?: logger.warn("configuration {} not found", shortname)
     }
 
 }
