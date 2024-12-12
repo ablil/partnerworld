@@ -7,3 +7,9 @@ variable "region" {
     type = string
     default = "europe-west3"
 }
+
+variable "repository" {
+    type = string
+    default = "my-repository"
+    description = "Docker images repository"
+}
