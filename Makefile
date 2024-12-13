@@ -1,18 +1,22 @@
-.PHONY: setup-java-home
+.PHONY: java
 
 PROJECT_ID := gcp-training-playground-405915
 REGION := europe-west3
 REPOSITORY := my-repository
 SERVICE := partnerworld
+JAVA_HOME := /opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
 
-setup-java-home:
+java:
 	export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
+run:
+	JAVA_HOME=$(JAVA_HOME) PROJECT_ID=$(PROJECT_ID) DATABASE_ID=$(SERVICE) ./gradlew bootRun
+
 # build and push docker image
-docker: setup-java-home
+docker: java
 docker: deploy-artifact-registry
-	export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home && ./gradlew jibDockerBuild
+	export JAVA_HOME=$(JAVA_HOME) && ./gradlew jibDockerBuild
 	docker tag partnerworld:latest $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/partnerworld:latest
 	docker push $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/partnerworld:latest
 
@@ -35,3 +39,6 @@ apply:
 
 destroy: terraform-init
 	terraform -chdir=terraform destroy --auto-aprove
+
+cloudrun:
+	gcloud run services update $(SERVICE) --image=$(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/$(SERVICE):latest --region=$(REGION)

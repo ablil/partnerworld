@@ -1,15 +1,17 @@
 
 spring:
   application:
-    name: partner world
+    name: partnerworld
+  output:
+    ansi:
+      enabled: ALWAYS
   cache:
     type: caffeine
   cloud:
     gcp:
+      project-id: ${PROJECT_ID:gcp-training-playground-405915}
       datastore:
-        host: 0.0.0.0:8081
-        project-id: gcp-training-playground-405915
-        database-id: partnerworld
+        database-id: ${DATABASE_ID:partnerworld}
 logging:
   level:
     io.ablil: DEBUG

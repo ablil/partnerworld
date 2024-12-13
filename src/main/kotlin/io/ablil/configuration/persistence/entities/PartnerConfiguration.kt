@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
 import java.util.*
+import org.apache.commons.lang3.RandomStringUtils
 
 @Entity(name = "configurations")
 data class PartnerConfiguration(
@@ -52,6 +53,31 @@ data class PartnerConfiguration(
                     }
                 },
                 metadata = dto.alternativeShortnames?.map { ConfigurationMetadata(it, null) }
+            )
+        }
+
+        fun createRandom(): PartnerConfiguration {
+            return PartnerConfiguration(
+                shortname = RandomStringUtils.randomAlphanumeric(5),
+                displayName = RandomStringUtils.randomAlphanumeric(10),
+                navigations = listOf(
+                    FeedNavigation(
+                        label = RandomStringUtils.randomAlphanumeric(5),
+                        identifier = UUID.randomUUID().toString(),
+                        type = NavigationType.STATIC
+                    ),CouponNavigation(
+                        label = RandomStringUtils.randomAlphanumeric(5),
+                        identifier = UUID.randomUUID().toString(),
+                        type = NavigationType.STATIC,
+                        coupon = "CPN"
+                    )
+                ),
+                metadata = listOf(
+                    ConfigurationMetadata(
+                        shortname = RandomStringUtils.randomAlphanumeric(5),
+                        description = RandomStringUtils.randomAlphanumeric(10),
+                    )
+                )
             )
         }
     }
