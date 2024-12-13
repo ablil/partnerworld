@@ -42,3 +42,12 @@ curl -X POST http://0.0.0.0:8080/configurations/random
 ```
 
 *For ease of use, this endpoint is ready-to-use on `http/configurations.http`*
+
+## Deployment
+
+Assuming you have nothing deployed on GCP and you want to deploy everything, run: `make deploy` . This command will try
+to setup terraform, build docker image and upload it to the artifact registry, then deploy all resources.
+
+In order to **destroy** everything and clean up your GCP infra, run: `make destory`
+
+While working locally and you want to update the current gcp infra, run: `make apply`
