@@ -10,6 +10,6 @@ variable "region" {
 
 variable "repository" {
     type = string
-    default = "my-repository"
+    default = "ghcr-upstream"
     description = "Docker images repository"
 }
