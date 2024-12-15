@@ -6,8 +6,16 @@ resource "google_cloud_run_v2_service" "partnerworld" {
 
   template {
     containers {
-      image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.repository}/partnerworld"
+      image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.repository}/ablil/partnerworld:latest"
+      env {
+          name = "PROJECT_ID"
+          value = var.project_id
+      }
+      env {
+          name = "DATABASE_ID"
+          value = google_firestore_database.database.name
+      }
     }
   }
-  depends_on = [google_artifact_registry_repository.my-repo, google_firestore_database.database]
+  depends_on = [google_artifact_registry_repository.ghcr, google_firestore_database.database]
 }
