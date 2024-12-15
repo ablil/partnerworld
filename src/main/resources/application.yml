@@ -15,6 +15,7 @@ spring:
 logging:
   level:
     io.ablil: DEBUG
+    org.springframework.web: DEBUG
     com.google.cloud.datastore: DEBUG
     org.springframework.cache: TRACE
 
@@ -22,3 +23,12 @@ logging:
 custom:
   auditing:
     enabled: false
+
+springdoc:
+  default-produces-media-type: application/json
+  packages-to-exclude: 'io.ablil' # serve the yaml file directly instead of scanning generated code
+  swagger-ui:
+    urls:
+      - url: 'oas/partnerworld.yaml'
+        name: partnerworld
+        display-name: partnerworld

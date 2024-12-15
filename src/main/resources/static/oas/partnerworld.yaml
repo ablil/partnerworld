@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: Partnerworld
+  description: Partnerworld configurations
+  version: 1.0.0
+servers:
+  - url: /
+
+tags:
+  - name: configuration
+    description: Partnerworld configurations
+
+paths:
+  /v1/configurations:
+    get:
+      summary: get all configurations
+      tags: ['configuration']
+      responses:
+        200:
+          description: list of configurations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration'
+components:
+  schemas:
+    ConfigurationStatus:
+      type: string
+      enum: ['ENABLED', 'DISABLED']
+      readOnly: true
+    ConfigurationMetadata:
+      type: object
+      required: ['shortName']
+      properties:
+        shortName:
+          type: string
+          example: 'lp143'
+        description:
+          type: string
+          example: 'online shop alternative short name'
+    Configuration:
+      type: object
+      required:
+        - shortName
+        - displayName
+        - iconUrl
+        - status
+        - id
+      properties:
+        id:
+          type: number
+        shortName:
+          type: string
+          example: 'lp54'
+        displayName:
+          type: string
+          example: 'Edeka'
+        iconUrl:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ConfigurationStatus'
+        metadata:
+          $ref: '#/components/schemas/ConfigurationMetadata'

@@ -4,6 +4,7 @@ plugins {
 	id 'org.jetbrains.kotlin.jvm' version '1.9.24'
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.24'
     id 'com.google.cloud.tools.jib' version '3.4.4'
+	id "org.openapi.generator" version "7.10.0"
 }
 
 group = 'io.ablil'
@@ -18,6 +19,7 @@ java {
 repositories {
 	mavenCentral()
 }
+
 
 dependencies {
 	// kotlin
@@ -39,6 +41,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
 	implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3'
 }
 
 kotlin {
@@ -65,3 +68,36 @@ jib {
         image = "eclipse-temurin:17-jre"
     }
 }
+
+openApiValidate {
+	inputSpec = "$rootDir/src/main/resources/static/oas/partnerworld.yaml"
+}
+openApiGenerate {
+	generatorName = "kotlin-spring"
+	inputSpecRootDirectory = "$rootDir/src/main/resources/static/oas"
+	apiPackage = "io.ablil.oas"
+	modelNameSuffix = "dto"
+	logToStderr = true
+	configOptions = [
+	        "enumPropertyMapping": "UPPERCASE",
+			"interfaceOnly":"true",
+			"skipDefaultInterface":"true",
+			"sortParamsByRequiredFlag":"true",
+			"title": "Partnerworld service",
+			"useSpringBoot3":"true",
+			"useTags":"true",
+	]
+}
+sourceSets {
+	main {
+		kotlin {
+			srcDirs("$rootDir/build/generate-resources/main/src/main/kotlin")
+		}
+	}
+}
+
+bootJar {
+	mainClass = "SpringApplicationKt"
+}
+
+tasks.compileKotlin.dependsOn(tasks.openApiGenerate)
