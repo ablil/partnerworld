@@ -7,6 +7,9 @@ SERVICE := partnerworld
 JAVA_HOME := /opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
 
+clean:
+	./gradlew clean
+
 java:
 	export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
@@ -38,7 +41,7 @@ apply:
 	terraform -chdir=terraform apply 
 
 destroy: terraform-init
-	terraform -chdir=terraform destroy --auto-aprove
+	terraform -chdir=terraform destroy --auto-approve
 
 cloudrun:
 	gcloud run services update $(SERVICE) --image=$(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/$(SERVICE):latest --region=$(REGION)

@@ -18,7 +18,7 @@ import java.net.URI
 
 @RestController
 @RequestMapping("/configurations")
-class ConfigurationController(val repository: ConfigurationRepository) {
+class ConfigurationController(val repository: ConfigurationRepository){
 
     val logger by logger()
 
