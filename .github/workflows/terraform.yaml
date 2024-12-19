@@ -11,7 +11,7 @@ on:
 
 env:
   TERRAFORM_DIR: IaC/terraform
-  TERRAFORM_VARS_FILE: ..//environments/development.auto.tfvars # relative to path above
+  TERRAFORM_VARS_FILE: ../environments/development.auto.tfvars # relative to path above
 
 jobs:
   deploy:
@@ -26,5 +26,5 @@ jobs:
       - name: terraform plan
         run: terraform -chdir=$TERRAFORM_DIR plan -var-file=$TERRAFORM_VARS_FILE
       - name: terraform apply
-        run: terraform -chdir=$TERRAFORM_DIR plan -var-file=$TERRAFORM_VARS_FILE --auto-approve
-        if: github.ref == 'refs/head/main'
+        run: terraform -chdir=$TERRAFORM_DIR apply -var-file=$TERRAFORM_VARS_FILE --auto-approve
+        if: github.ref == 'refs/heads/main'
