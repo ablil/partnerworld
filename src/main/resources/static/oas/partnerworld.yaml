@@ -47,6 +47,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Configuration'
+    delete:
+      summary: soft delete partner configuration
+      description: partner configuration are SOFT deleted by changing internally their status to DISABLED
+      operationId: deleteConfiguration
+      tags: ['configuration']
+      parameters:
+        - $ref: '#/components/parameters/PartnerShortname'
+      responses:
+        204:
+          description: no content
 
 components:
   schemas:

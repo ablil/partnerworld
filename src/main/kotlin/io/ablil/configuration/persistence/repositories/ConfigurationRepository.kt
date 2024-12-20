@@ -10,6 +10,8 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching
 import org.springframework.context.annotation.Primary
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
@@ -22,6 +24,8 @@ interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Lo
         status: ConfigurationStatus = ConfigurationStatus.ENABLED
     ): PartnerConfiguration?
 
+
+    fun findAllByStatus(status: ConfigurationStatus = ConfigurationStatus.ENABLED, pageable: Pageable): Page<PartnerConfiguration>
 
     @Query("select * from configurations where (shortname = @shortname OR metadata.shortname = @shortname ) AND status = @status ")
     fun queryByShortnameAndStatus(
