@@ -3,9 +3,6 @@ package io.ablil.configuration.persistence.entities
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue
 import com.google.cloud.spring.data.datastore.core.mapping.Entity
-import io.ablil.configuration.web.ConfigurationDto
-import io.ablil.configuration.web.CouponDto
-import io.ablil.configuration.web.FeedDto
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -30,31 +27,6 @@ data class PartnerConfiguration(
     var id: Long? = null
 ) {
     companion object {
-        fun from(dto: ConfigurationDto): PartnerConfiguration {
-            return PartnerConfiguration(
-                shortname = dto.shortname,
-                displayName = dto.displayName,
-                navigations = dto.navigations.map {
-                    when (it) {
-                        is FeedDto -> FeedNavigation(
-                            label = it.label,
-                            identifier = UUID.randomUUID().toString(),
-                            type = NavigationType.STATIC
-                        )
-
-                        is CouponDto -> CouponNavigation(
-                            label = it.label,
-                            coupon = it.coupon,
-                            identifier = UUID.randomUUID().toString(),
-                            type = NavigationType.STATIC
-                        )
-
-                        else -> error("unknown type")
-                    }
-                },
-                metadata = dto.alternativeShortnames?.map { ConfigurationMetadata(it, null) }
-            )
-        }
 
         fun createRandom(): PartnerConfiguration {
             return PartnerConfiguration(
