@@ -22,18 +22,10 @@ class ConfigurationController(val repository: ConfigurationRepository){
 
     val logger by logger()
 
-    @GetMapping
-    fun getAll(): List<PartnerConfiguration> = repository.findAll().toList()
-
     @PostMapping("/random")
     fun createRandomConfiguration(): PartnerConfiguration = repository.save(RandomConfigurationUtils.random().also {
         it.metadata = listOf(ConfigurationMetadata(it.shortname, "x${it.shortname}"))
     })
-
-    @GetMapping("/{shortname}")
-    fun getConfiguration(@PathVariable shortname: String): ResponseEntity<PartnerConfiguration?> {
-        return repository.queryByShortnameAndStatus(shortname).let { ResponseEntity.ofNullable(it) }
-    }
 
     @PostMapping
     fun createConfiguration(@RequestBody body: ConfigurationDto): ResponseEntity<PartnerConfiguration> {
