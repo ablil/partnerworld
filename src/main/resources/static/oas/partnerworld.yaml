@@ -13,15 +13,41 @@ tags:
 paths:
   /v1/configurations:
     get:
-      summary: get all configurations
+      summary: list all enabled configurations
       tags: ['configuration']
+      operationId: getAllConfigurations
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
       responses:
         200:
-          description: list of configurations
+          description: list all enabled configurations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  configuration:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+  /v1/configurations/{shortname}:
+    get:
+      summary: get partner configuration
+      operationId: getConfiguration
+      tags: ['configuration']
+      parameters:
+        - $ref: '#/components/parameters/PartnerShortname'
+      responses:
+        200:
+          description: partner configuration
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Configuration'
+
 components:
   schemas:
     ConfigurationStatus:
@@ -44,7 +70,6 @@ components:
         - shortName
         - displayName
         - iconUrl
-        - status
         - id
       properties:
         id:
@@ -58,7 +83,108 @@ components:
         iconUrl:
           type: string
           readOnly: true
-        status:
-          $ref: '#/components/schemas/ConfigurationStatus'
+          example: 'https://www.edeka.de/edeka-ui-assets/images/logo.png'
         metadata:
-          $ref: '#/components/schemas/ConfigurationMetadata'
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigurationMetadata'
+        navigations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnyNavigation'
+    NavigationType:
+      type: string
+      enum: ['DYNAMIC', 'STATIC']
+      default: 'STATIC'
+    Navigation:
+      type: object
+      required:
+        - label
+        - type
+        - identifier
+      properties:
+        navigationType:
+            type: string
+            enum: ['FEED', 'COUPON']
+            writeOnly: true
+        label:
+          type: string
+          example: 'random label'
+        identifier:
+          type: string
+          format: uuid
+          readOnly: false
+        type:
+          $ref: '#/components/schemas/NavigationType'
+    FeedNavigation:
+      allOf:
+        - $ref: '#/components/schemas/Navigation'
+    CouponNavigation:
+      allOf:
+        - $ref: '#/components/schemas/Navigation'
+        - type: object
+          required:
+            - coupon
+          properties:
+            coupon:
+              type: string
+              example: 'CP14833'
+    AnyNavigation:
+      oneOf:
+        - $ref: '#/components/schemas/FeedNavigation'
+        - $ref: '#/components/schemas/CouponNavigation'
+      discriminator:
+        propertyName: navigationType
+        mapping:
+          FEED: '#/components/schemas/FeedNavigation'
+          COUPON: '#/components/schemas/CouponNavigation'
+    Pagination:
+      type: object
+      required:
+        - page
+        - size
+        - totalPages
+        - totalItems
+      properties:
+        page:
+          type: integer
+          default: 1
+          minimum: 1
+          description: count start at 1
+        size:
+          type: integer
+          description: limit the number of result per page
+          default: 200
+        totalPages:
+          type: integer
+          description: total number of pages
+        totalItems:
+          type: integer
+          description: total count of items
+
+  parameters:
+    PartnerShortname:
+      name: 'shortname'
+      in: path
+      required: true
+      example: 'lp54'
+      description: partner shortname
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      example: 1
+      description: page number
+      schema:
+        type: integer
+        default: 1
+    PageSize:
+      name: size
+      in: query
+      example: 100
+      description: page size
+      schema:
+        maximum: 200
+        type: integer
+        default: 100
