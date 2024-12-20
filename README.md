@@ -65,3 +65,7 @@ A *Makefile* is provided with some basic targets to deploy or destroy resources.
 A Github workflow has been configured to automatially deploy/update all the resources when a new commit is pushed to main branch.
 
 *Ensure the secret `HCP_TERRAFORM_API_KEY` has been added to workflow secrets, in order for the workflow to authenticate to HCP terraform*
+
+# References
+
+[HCP terraform workspace](https://app.terraform.io/app/ablil-org/workspaces)
