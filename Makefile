@@ -12,10 +12,15 @@ clean:
 java:
 	export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
-run:
-	JAVA_HOME=$(JAVA_HOME) PROJECT_ID=$(PROJECT_ID) DATABASE_ID=$(SERVICE) ./gradlew bootRun
+runCloud:
+	JAVA_HOME=$(JAVA_HOME) PROJECT_ID=$(PROJECT_ID) DATABASE_ID=$(SERVICE) SPRING_PROFILES_ACTIVE=cloud ./gradlew bootRun
 
+emulator:
+	docker compose up -d emulator
 
-# open cloudrun service with gcp proxy :8080
+run: emulator
+	SPRING_PROFILES_ACTIVE=emulator JAVA_HOME=$(JAVA_HOME) ./gradlew bootRun
+
+# open cloud run service with gcp proxy :8080
 proxy:
 	gcloud run services proxy $(SERVICE) --project $(PROJECT_ID) --region $(REGION)

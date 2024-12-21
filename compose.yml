@@ -1,6 +1,5 @@
-version: '3'
 services:
-  firestore:
+  emulator:
     image: 'google/cloud-sdk:emulators'
     container_name: 'partnerworld_firestore'
     command: gcloud beta emulators firestore start --database-mode=datastore-mode --host-port=0.0.0.0:8081 --project=myproject --verbosity=debug

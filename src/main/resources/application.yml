@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: partnerworld
@@ -7,11 +6,6 @@ spring:
       enabled: ALWAYS
   cache:
     type: caffeine
-  cloud:
-    gcp:
-      project-id: ${PROJECT_ID:gcp-training-playground-405915}
-      datastore:
-        database-id: ${DATABASE_ID:partnerworld}
 logging:
   level:
     io.ablil: DEBUG
@@ -32,3 +26,27 @@ springdoc:
       - url: 'oas/partnerworld.yaml'
         name: partnerworld
         display-name: partnerworld
+
+---
+# emulator config
+spring:
+  config:
+    activate:
+      on-profile: emulator
+  cloud:
+    gcp:
+      datastore:
+        host: 0.0.0.0:8081
+        project-id: my-project # configured on the container
+
+---
+# cloud config
+spring:
+  config:
+    activate:
+      on-profile: cloud
+  cloud:
+    gcp:
+      project-id: ${PROJECT_ID:gcp-training-playground-405915}
+      datastore:
+        database-id: ${DATABASE_ID:partnerworld}
