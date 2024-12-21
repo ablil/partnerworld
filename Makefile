@@ -13,13 +13,13 @@ clean:
 java:
 	export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home
 
-runCloud:
+runCloud: clean
 	JAVA_HOME=$(JAVA_HOME) PROJECT_ID=$(PROJECT_ID) DATABASE_ID=$(SERVICE) SPRING_PROFILES_ACTIVE=cloud ./gradlew bootRun
 
 emulator:
 	docker compose up -d emulator
 
-run: emulator
+run: emulator clean
 	SPRING_PROFILES_ACTIVE=emulator JAVA_HOME=$(JAVA_HOME) ./gradlew bootRun
 
 # update cloud run service with local docker image
