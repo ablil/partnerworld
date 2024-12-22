@@ -1,18 +1,22 @@
 .PHONY: default
 
 ENV ?= development
+TF_WORKSPACE = partnerworld-$(ENV)
 
 default: plan init
 
 init:
-	terraform -chdir=terraform init
+	TF_WORKSPACE=$(TF_WORKSPACE) terraform -chdir=terraform init
 	
 plan: init
-	terraform -chdir=terraform plan -var-file=../environments/$(ENV).auto.tfvars
+	TF_WORKSPACE=$(TF_WORKSPACE) terraform -chdir=terraform plan -var-file=../environments/$(ENV).auto.tfvars
 
 apply: init
-	terraform -chdir=terraform apply -var-file=../environments/$(ENV).auto.tfvars
+	TF_WORKSPACE=$(TF_WORKSPACE) terraform -chdir=terraform apply -var-file=../environments/$(ENV).auto.tfvars
 
 destroy: init
-	terraform -chdir=terraform destroy -var-file=../environments/$(ENV).auto.tfvars
+	TF_WORKSPACE=$(TF_WORKSPACE) terraform -chdir=terraform destroy -var-file=../environments/$(ENV).auto.tfvars
 
+
+output:
+	TF_WORKSPACE=$(TF_WORKSPACE) terraform -chdir=terraform output

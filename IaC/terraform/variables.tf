@@ -3,8 +3,14 @@ variable "gcp_credentials" {
     description = "gcp credentials setup through HCP terraform workspace variable"
     sensitive = true
 }
+
+variable "environment" {
+    type = string
+    description = "environment where all resources are deployed"
+}
 variable "project_id" {
     type = string
+    default = "gcp-training-playground-405915"
 }
 
 variable "region" {
