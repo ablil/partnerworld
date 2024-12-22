@@ -11,12 +11,15 @@ on:
      - main
 
 env:
-  TERRAFORM_DIR: IaC/terraform
-  TERRAFORM_VARS_FILE: ../environments/development.auto.tfvars # relative to path above
+  ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+  DOCKER_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.head_ref }}
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'docker-production' || 'docker-development' }}
+      url: https://github.com/ablil/partnerworld/pkgs/container/partnerworld?tag=${{ github.ref == 'refs/heads/main' && 'latest' || github.head_ref }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -25,26 +28,43 @@ jobs:
           java-version: '17'
       - run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITHUB_TOKEN }}
       - run: ./gradlew jibDockerBuild
-      - run: docker tag partnerworld:latest ghcr.io/ablil/partnerworld:${{ github.head_ref }} && docker push $_
-        if: github.ref != 'refs/heads/main'
-      - run: docker tag partnerworld:latest ghcr.io/ablil/partnerworld:latest && docker push $_
-        if: github.ref == 'refs/heads/main'
+      - run: docker tag partnerworld:latest ghcr.io/ablil/partnerworld:$DOCKER_TAG && docker push $_
 
   terraform:
     runs-on: ubuntu-latest
-    needs: docker # wait for docker image to be pushed to ghcr
+    env:
+      TF_WORKSPACE: ${{  github.ref == 'refs/heads/main' && 'partnerworld-production' || 'partnerworld-development' }}
+    outputs:
+      cloudrun_url: ${{ steps.url-step.outputs.url }}
+    defaults:
+      run:
+        working-directory: IaC/terraform
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
           cli_config_credentials_token: ${{ secrets.HCP_TERRAFORM_API_KEY }}
-      - name: terraform init
-        run: terraform -chdir=$TERRAFORM_DIR init
-      - name: terraform plan
-        run: terraform -chdir=$TERRAFORM_DIR plan -var-file=$TERRAFORM_VARS_FILE
-      - name: terraform apply
-        run: terraform -chdir=$TERRAFORM_DIR apply -var-file=$TERRAFORM_VARS_FILE --auto-approve
-        if: github.ref == 'refs/heads/main'
+      - run: terraform init
+      - run: terraform plan -var-file=../environments/$ENVIRONMENT.auto.tfvars
+      - run: terraform apply -var-file=../environments/$ENVIRONMENT.auto.tfvars -auto-approve
+      - run: echo "url=$(terraform output --raw cloudrun_url)" >> "$GITHUB_OUTPUT"
+        id: url-step
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [docker, terraform]
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      url: ${{ needs.terraform.outputs.cloudrun_url }}
+    env:
+      PROJECT_ID: ${{ vars.PROJECT_ID }}
+      REGION: ${{ vars.REGION }}
+    steps:
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - uses: 'google-github-actions/setup-gcloud@v2'
+      - run: gcloud run services update partnerworld-$ENVIRONMENT --project=$PROJECT_ID --region=$REGION --image=$REGION-docker.pkg.dev/$PROJECT_ID/ghcr-upstream/ablil/partnerworld:$DOCKER_TAG
 
   gemini-review:
     if: startsWith(github.ref, 'refs/pull')
