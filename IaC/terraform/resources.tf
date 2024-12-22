@@ -1,7 +1,7 @@
 resource "google_artifact_registry_repository" "ghcr" {
   location      = var.region
-  repository_id = var.repository
-  description   = "Docker images registy"
+  repository_id = "ghcr-${var.environment}"
+  description   = "Docker images registy for ${var.environment}"
   format        = "DOCKER"
   mode = "REMOTE_REPOSITORY"
 
@@ -30,7 +30,7 @@ resource "google_cloud_run_v2_service" "partnerworld" {
 
   template {
     containers {
-      image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.repository}/ablil/partnerworld:latest"
+      image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.ghcr.repository_id}/ablil/partnerworld:latest"
       env {
           name = "PROJECT_ID"
           value = var.project_id

@@ -64,7 +64,7 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - uses: 'google-github-actions/setup-gcloud@v2'
-      - run: gcloud run services update partnerworld-$ENVIRONMENT --project=$PROJECT_ID --region=$REGION --image=$REGION-docker.pkg.dev/$PROJECT_ID/ghcr-upstream/ablil/partnerworld:$DOCKER_TAG
+      - run: gcloud run services update partnerworld-$ENVIRONMENT --project=$PROJECT_ID --region=$REGION --image=$REGION-docker.pkg.dev/$PROJECT_ID/ghcr-$ENVIRONMENT/ablil/partnerworld:$DOCKER_TAG
 
   gemini-review:
     if: startsWith(github.ref, 'refs/pull')
