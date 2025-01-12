@@ -13,6 +13,18 @@ logging:
     com.google.cloud.datastore: DEBUG
     org.springframework.cache: TRACE
 
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    git:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,beans,loggers
 # custom properties
 custom:
   auditing:
