@@ -13,6 +13,18 @@ logging:
     com.google.cloud.datastore: DEBUG
     org.springframework.cache: TRACE
 
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    git:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,beans,loggers
 # custom properties
 custom:
   auditing:
@@ -49,4 +61,4 @@ spring:
     gcp:
       project-id: ${PROJECT_ID:gcp-training-playground-405915}
       datastore:
-        database-id: ${DATABASE_ID:partnerworld}
+        database-id: ${DATABASE_ID:partnerworld-development}
