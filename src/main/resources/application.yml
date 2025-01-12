@@ -49,4 +49,4 @@ spring:
     gcp:
       project-id: ${PROJECT_ID:gcp-training-playground-405915}
       datastore:
-        database-id: ${DATABASE_ID:partnerworld}
+        database-id: ${DATABASE_ID:partnerworld-development}
