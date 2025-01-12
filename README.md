@@ -1,5 +1,6 @@
 # Partnerworld service
 
+[![CI/CD](https://github.com/ablil/partnerworld/actions/workflows/cicd.yaml/badge.svg)](https://github.com/ablil/partnerworld/actions/workflows/cicd.yaml)
 
 ## Development
 
