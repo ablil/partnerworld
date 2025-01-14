@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
-    <include resource="com/google/cloud/spring/logging/logback-json-appender.xml" />
+    <include resource="com/google/cloud/spring/logging/logback-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-    <appender name="LOGSTASH" class="ch.qos.logback.core.FileAppender">
-        <file>logs/partnerworld.log</file>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-        </encoder>
-    </appender>
-
-    <springProfile name="!cloud">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="LOGSTASH"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="cloud">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE_JSON"/>
-        </root>
-    </springProfile>
-
+    <root level="INFO">
+        <!-- If running in GCP, remove the CONSOLE appender otherwise logs will be duplicated. -->
+<!--        <appender-ref ref="CONSOLE"/>-->
+        <appender-ref ref="STACKDRIVER"/>
+    </root>
 </configuration>

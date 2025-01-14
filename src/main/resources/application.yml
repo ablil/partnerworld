@@ -1,18 +1,8 @@
 spring:
   application:
     name: partnerworld
-  output:
-    ansi:
-      enabled: ALWAYS
   cache:
     type: caffeine
-logging:
-  level:
-    io.ablil: DEBUG
-    org.springframework.web: DEBUG
-    com.google.cloud.datastore: DEBUG
-    org.springframework.cache: TRACE
-
 management:
   info:
     java:
@@ -68,6 +58,8 @@ spring:
       on-profile: cloud
   cloud:
     gcp:
+      logging:
+        enabled: true
       project-id: ${PROJECT_ID:gcp-training-playground-405915}
       datastore:
         database-id: ${DATABASE_ID:partnerworld-development}
