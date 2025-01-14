@@ -43,6 +43,10 @@ springdoc:
 
 ---
 # emulator config
+custom:
+  emulator:
+    project_id: myproject
+
 spring:
   config:
     activate:
@@ -51,7 +55,10 @@ spring:
     gcp:
       datastore:
         host: 0.0.0.0:8081
-        project-id: my-project # configured on the container
+        project-id: ${custom.emulator.project_id}
+      pubsub:
+        emulator-host: 0.0.0.0:8085
+        project-id: ${custom.emulator.project_id}
 
 ---
 # cloud config

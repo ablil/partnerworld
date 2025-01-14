@@ -9,7 +9,7 @@
 
 A Docker container is configured to run Firestore emulator in Datastore mode, exposed on port 8081
 ```shell
-docker-compose up -d firestore
+docker compose up -d emulator
 ```
 
 To reset the emulator and cleanup existing data on runtime without rebooting, run :
@@ -24,6 +24,29 @@ curl -X POST http://0.0.0.0:8081/emulator/v1/projects/myproject:export \
 -d '{"database":"projects/myproject/databases/", "export_directory":"/tmp"}'
 ```
 *note that the data is exported to the container volume itself, and not the host machine*
+
+### Pubsub emulator
+
+A Docker image is configured and exposed on port 8085:
+```shell
+docker compose up -d pubsub
+```
+
+To create a topic and and a pull subscription, run:
+```shell
+python scripts/emulators/pubsub/setup.py <project_id> <topic_id> <subscription_id>
+```
+or you can run a Makefile target that run all the container and create sample topic/subscription for you:
+```shell
+make emulators
+```
+
+**Important !**
+If you want to run any python script with GCP client library against the emulator, make sure to set the following env variables:
+
+```shell
+PUBSUB_EMULATOR_HOST=localhost:8085 PUBSUB_PROJECT_ID=myproject python run.py
+```
 
 ### Run locally
 

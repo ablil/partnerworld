@@ -17,7 +17,7 @@ def generate_message() -> dict:
     }
     return sample
 
-def publish(message: dict):
+def publish(project_id: str, topic_id: str, message: dict):
     publisher = pubsub_v1.PublisherClient()
     topic_name = f"projects/{project_id}/topics/{topic}"
     future = publisher.publish(topic_name, json.dumps(message).encode())
@@ -31,5 +31,9 @@ def usage():
 
 if __name__ == '__main__':
     total_message  = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+
+    if 'PUBSUB_PROJECT_ID' in os.environ:
+        project_id = os.environ['PUBSUB_PROJECT_ID']
+
     for _ in range(total_message):
-        publish(generate_message())
+        publish(project_id, topic, generate_message())

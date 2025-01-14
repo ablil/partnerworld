@@ -17,10 +17,11 @@ java:
 runCloud: clean
 	JAVA_HOME=$(JAVA_HOME) PROJECT_ID=$(PROJECT_ID) DATABASE_ID=$(SERVICE)-$(ENV) SPRING_PROFILES_ACTIVE=cloud ./gradlew bootRun
 
-emulator:
-	docker compose up -d emulator
+emulators:
+	docker compose up -d  && \
+		PUBSUB_EMULATOR_HOST=localhost:8085 PUBSUB_PROJECT_ID=myproject python scripts/emulators/pubsub/setup.py myproject partner-configurations partner-configuration
 
-run: emulator clean
+run: emulators clean
 	SPRING_PROFILES_ACTIVE=emulator JAVA_HOME=$(JAVA_HOME) ./gradlew bootRun
 
 # update cloud run service with local docker image

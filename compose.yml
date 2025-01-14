@@ -5,3 +5,9 @@ services:
     command: gcloud beta emulators firestore start --database-mode=datastore-mode --host-port=0.0.0.0:8081 --project=myproject --verbosity=debug
     ports:
       - 8081:8081
+  pubsub:
+    image: 'google/cloud-sdk:emulators'
+    container_name: 'partnerworld_pubsub'
+    command: gcloud beta emulators pubsub start --project=myproject --verbosity=debug --host-port=0.0.0.0:8085
+    ports:
+      - 8085:8085
