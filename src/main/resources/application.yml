@@ -29,6 +29,8 @@ management:
 custom:
   auditing:
     enabled: false
+  pubsub:
+    subscription: ${subscription:partner-configuration}
 
 springdoc:
   default-produces-media-type: application/json
