@@ -1,118 +1,23 @@
 plugins {
-	id 'org.springframework.boot' version '3.3.0'
-	id 'io.spring.dependency-management' version '1.1.5'
-	id 'org.jetbrains.kotlin.jvm' version '1.9.24'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.24'
-    id 'com.google.cloud.tools.jib' version '3.4.4'
-	id "org.openapi.generator" version "7.10.0"
-	id "com.gorylenko.gradle-git-properties" version "2.4.2"
+    id 'org.jetbrains.kotlin.jvm' version '1.9.24' apply false
+    id "io.spring.dependency-management" version '1.1.5'
 }
 
-group = 'io.ablil'
-version = '0.0.1'
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
+    group = 'io.ablil'
 
-repositories {
-	mavenCentral()
-}
-
-
-dependencies {
-	// kotlin
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-
-	// spring
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-logging'
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	// gcp
-	implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:5.8.0')
-	implementation 'com.google.cloud:spring-cloud-gcp-starter-data-datastore'
-	implementation 'com.google.cloud:spring-cloud-gcp-starter-logging'
-
-
-
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
-	implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
-	implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
-}
-
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll '-Xjsr305=strict'
-	}
-}
-
-tasks {
-	test {
-		systemProperty("spring.profiles.active", "test")
-	}
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-jib {
-    to {
-        image = "partnerworld"
+    repositories {
+        mavenCentral()
     }
-    from {
-        image = "eclipse-temurin:17-jre"
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.3.0"
+        }
+        dependencies {
+            dependency('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3')
+        }
     }
-}
-
-openApiValidate {
-	inputSpec = "$rootDir/src/main/resources/static/oas/partnerworld.yaml"
-}
-openApiGenerate {
-	generatorName = "kotlin-spring"
-	inputSpecRootDirectory = "$rootDir/src/main/resources/static/oas"
-	apiPackage = "io.ablil.oas"
-	modelNameSuffix = "dto"
-	logToStderr = true
-	configOptions = [
-	        "enumPropertyMapping": "UPPERCASE",
-			"interfaceOnly":"true",
-			"skipDefaultInterface":"true",
-			"sortParamsByRequiredFlag":"true",
-			"title": "Partnerworld service",
-			"useSpringBoot3":"true",
-			"useTags":"true",
-	]
-}
-sourceSets {
-	main {
-		kotlin {
-			srcDirs("$rootDir/build/generate-resources/main/src/main/kotlin")
-		}
-	}
-}
-
-bootJar {
-	mainClass = "SpringApplicationKt"
-}
-
-tasks.compileKotlin.dependsOn(tasks.openApiGenerate)
-
-springBoot {
-	buildInfo()
-}
-
-gitProperties {
-	branch = System.getenv('GITHUB_REF_NAME')
 }

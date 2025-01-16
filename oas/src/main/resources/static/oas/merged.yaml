@@ -1,0 +1,13 @@
+---
+servers:
+- url: "http://localhost:8080"
+openapi: "3.0.0"
+paths:
+  /v1/configurations:
+    $ref: "./partnerworld.yaml#/paths/~1v1~1configurations"
+  /v1/configurations/{shortname}:
+    $ref: "./partnerworld.yaml#/paths/~1v1~1configurations~1{shortname}"
+info:
+  title: "merged spec"
+  description: "merged spec"
+  version: "1.0.0"
