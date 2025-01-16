@@ -1,0 +1,79 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.springframework.boot' version '3.3.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.24'
+    id 'com.google.cloud.tools.jib' version '3.4.4'
+    id "com.gorylenko.gradle-git-properties" version "2.4.2" // TODO: maybe this should be iin root module
+}
+
+version = '0.0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation project(':oas')
+    // kotlin
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // gcp
+    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:5.8.0')
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-data-datastore'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-logging'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
+
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll '-Xjsr305=strict'
+    }
+}
+
+tasks {
+    test {
+        systemProperty("spring.profiles.active", "test")
+        useJUnitPlatform()
+    }
+}
+
+jib {
+    to {
+        image = "partnerworld"
+    }
+    from {
+        image = "eclipse-temurin:17-jre"
+    }
+}
+
+bootJar {
+    mainClass = "SpringApplicationKt"
+}
+
+tasks.compileKotlin.dependsOn(':oas:build')
+
+springBoot {
+    buildInfo()
+}
+
+gitProperties {
+    branch = System.getenv('GITHUB_REF_NAME')
+}

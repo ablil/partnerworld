@@ -1,1 +1,3 @@
 rootProject.name = 'configuration'
+include 'application'
+include 'oas'

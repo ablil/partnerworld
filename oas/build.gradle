@@ -1,0 +1,51 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id "org.openapi.generator" version "7.10.0"
+}
+version = '0.0.1'
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
+}
+
+openApiValidate {
+    inputSpec = "$projectDir/src/main/resources/static/oas/partnerworld.yaml"
+}
+
+openApiGenerate {
+    generatorName = "kotlin-spring"
+    inputSpecRootDirectory = "$projectDir/src/main/resources/static/oas"
+    modelNameSuffix = "dto"
+    apiPackage = "io.ablil.oas"
+    logToStderr = true
+    configOptions = [
+            "enumPropertyMapping"     : "UPPERCASE",
+            "interfaceOnly"           : "true",
+            "skipDefaultInterface"    : "true",
+            "sortParamsByRequiredFlag": "true",
+            "title"                   : "Partnerworld service",
+            "useSpringBoot3"          : "true",
+            "useTags"                 : "true",
+    ]
+}
+
+sourceSets {
+    main {
+        kotlin.srcDir("$buildDir/generate-resources/main/src/main/kotlin") // Add generated Kotlin code to the source set
+    }
+}
+
+tasks.named('compileKotlin') {
+    dependsOn(tasks.openApiGenerate)
+}
+tasks.named('build') {
+    dependsOn(tasks.openApiGenerate)
+}
+
+tasks.jar {
+    from("$buildDir/generate-resources/main/src/main/kotlin") // Include the generated Kotlin code
+    archiveBaseName.set("oas") // Name of the JAR
+    archiveVersion.set("0.0.1")
+}
