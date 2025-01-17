@@ -1,3 +1,4 @@
 rootProject.name = 'configuration'
 include 'application'
 include 'oas'
+include 'IaC'

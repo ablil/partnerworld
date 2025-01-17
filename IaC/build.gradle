@@ -1,0 +1,54 @@
+def getPropertyOrDefault(key, defaultValue) {
+    return project.hasProperty(key) ? project.findProperty(key) : defaultValue
+}
+
+def env = getPropertyOrDefault('environment', 'development')
+def tf_workspace = "partnerworld-${env}"
+def terraformDirectory = "$projectDir/src/main/terraform"
+def terraformVarsFile = "$projectDir/src/main/environments/${env}.auto.tfvars"
+
+tasks.register('terraformInit', Exec) {
+    group = "Terraform"
+    description = "Initialize Terraform"
+    workingDir terraformDirectory
+    commandLine 'terraform', 'init'
+    doFirst {
+        environment "TF_WORKSPACE", tf_workspace
+    }
+}
+
+tasks.register('terraformPlan', Exec) {
+    group = "Terraform"
+    description = "Plan Terraform"
+    workingDir terraformDirectory
+    commandLine 'terraform', 'plan', "--var-file=${terraformVarsFile}"
+    doFirst {
+        environment "TF_WORKSPACE", tf_workspace
+    }
+
+    dependsOn(tasks.terraformInit)
+}
+
+tasks.register('terraformApply', Exec) {
+    group = "Terraform"
+    description = "Apply Terraform"
+    workingDir terraformDirectory
+    commandLine 'terraform', 'apply', "--var-file=${terraformVarsFile}"
+    doFirst {
+        environment "TF_WORKSPACE", tf_workspace
+    }
+
+    dependsOn(tasks.terraformInit)
+}
+
+tasks.register('terraformOutput', Exec) {
+    group = "Terraform"
+    description = "Output Terraform"
+    workingDir terraformDirectory
+    commandLine 'terraform', 'output'
+    doFirst {
+        environment "TF_WORKSPACE", tf_workspace
+    }
+
+    dependsOn(tasks.terraformInit)
+}

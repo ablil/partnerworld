@@ -73,25 +73,7 @@ curl -X POST http://0.0.0.0:8080/configurations/random
 
 # Terraform
 
-All the resources are defined as code through terrafrom in **IaC/** directory, and are managed by [ HCP terraform ]( https://app.terraform.io/app/ablil-org/workspaces ).
-
-## Local dev
-
-A *Makefile* is provided with some basic targets to deploy or destroy resources.
-
-**deploy**: `make apply`
-
-**destory**: `make destroy`
-
-
-*Ensure you are authenticated to terraform, by running `terraform login`*
-
-
-## Github workflows
-
-A Github workflow has been configured to automatially deploy/update all the resources when a new commit is pushed to main branch.
-
-*Ensure the secret `HCP_TERRAFORM_API_KEY` has been added to workflow secrets, in order for the workflow to authenticate to HCP terraform*
+Check [here](./IaC/README.md)
 
 # References
 
