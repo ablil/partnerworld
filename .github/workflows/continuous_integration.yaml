@@ -17,9 +17,6 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'docker-production' || 'docker-development' }}
-      url: https://github.com/ablil/partnerworld/pkgs/container/partnerworld?tag=${{ github.ref == 'refs/heads/main' && 'latest' || github.head_ref }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -38,7 +35,7 @@ jobs:
       cloudrun_url: ${{ steps.url-step.outputs.url }}
     defaults:
       run:
-        working-directory: IaC/terraform
+        working-directory: IaC/src/main/terraform
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
@@ -65,13 +62,3 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - uses: 'google-github-actions/setup-gcloud@v2'
       - run: gcloud run services update partnerworld-$ENVIRONMENT --project=$PROJECT_ID --region=$REGION --image=$REGION-docker.pkg.dev/$PROJECT_ID/ghcr-$ENVIRONMENT/ablil/partnerworld:$DOCKER_TAG
-
-  gemini-review:
-    if: startsWith(github.ref, 'refs/pull')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Gemini code review
-        uses: ablil/gemini-code-review@v0.5.10
-        with:
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
