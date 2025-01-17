@@ -35,9 +35,9 @@ To get full list of available task, run:
 
 The Gradle project can be tweaked through the following properties:
 
-| property    | description                             |
-|-------------|-----------------------------------------|
-| environment | `development` (default) or `production` |
+| property | description                             |
+|----------|-----------------------------------------|
+| env      | `development` (default) or `production` |
 
 eg, `./gradlew terraformPlan -Penvironment=production`
 
