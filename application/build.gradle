@@ -8,11 +8,7 @@ plugins {
 
 version = '0.0.1'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+def isCI = Boolean.valueOf(System.getenv('CI'))
 
 dependencies {
     implementation project(':oas')
@@ -53,11 +49,16 @@ tasks {
         systemProperty("spring.profiles.active", "test")
         useJUnitPlatform()
     }
+    build {
+        if (isCI) {
+            dependsOn(tasks.jib)
+        }
+    }
 }
 
 jib {
     to {
-        image = "partnerworld"
+        image = isCI ? "ghcr.io/ablil/partnerworld:${project.findProperty('tag') ?: 'latest'}" : "partnerworld"
     }
     from {
         image = "eclipse-temurin:17-jre"
