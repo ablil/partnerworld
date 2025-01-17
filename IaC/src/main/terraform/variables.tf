@@ -4,7 +4,7 @@ variable "gcp_credentials" {
     sensitive = true
 }
 
-variable "environment" {
+variable "env" {
     type = string
     description = "environment where all resources are deployed"
 }

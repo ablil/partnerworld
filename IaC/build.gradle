@@ -2,7 +2,7 @@ def getPropertyOrDefault(key, defaultValue) {
     return project.hasProperty(key) ? project.findProperty(key) : defaultValue
 }
 
-def env = getPropertyOrDefault('environment', 'development')
+def env = getPropertyOrDefault('env', 'development')
 def tf_workspace = "partnerworld-${env}"
 def terraformDirectory = "$projectDir/src/main/terraform"
 def terraformVarsFile = "$projectDir/src/main/environments/${env}.auto.tfvars"

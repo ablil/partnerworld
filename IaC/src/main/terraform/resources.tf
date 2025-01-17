@@ -1,7 +1,7 @@
 resource "google_artifact_registry_repository" "ghcr" {
   location      = var.region
-  repository_id = "ghcr-${var.environment}"
-  description   = "Docker images registy for ${var.environment}"
+  repository_id = "ghcr-${var.env}"
+  description   = "Docker images registy for ${var.env}"
   format        = "DOCKER"
   mode          = "REMOTE_REPOSITORY"
 
@@ -15,7 +15,7 @@ resource "google_artifact_registry_repository" "ghcr" {
 
 resource "google_firestore_database" "database" {
   project         = var.project_id
-  name            = "partnerworld-${var.environment}"
+  name            = "partnerworld-${var.env}"
   location_id     = var.region
   type            = "DATASTORE_MODE"
   deletion_policy = "DELETE"
@@ -23,7 +23,7 @@ resource "google_firestore_database" "database" {
 
 
 resource "google_cloud_run_v2_service" "partnerworld" {
-  name                = "partnerworld-${var.environment}"
+  name                = "partnerworld-${var.env}"
   location            = var.region
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
@@ -41,7 +41,7 @@ resource "google_cloud_run_v2_service" "partnerworld" {
       }
       env {
         name  = "SPRING_PROFILES_ACTIVE"
-        value = "cloud,${var.environment}"
+        value = "cloud,${var.env}"
       }
       env {
         name  = "subscription"
