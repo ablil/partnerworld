@@ -4,6 +4,7 @@ terraform {
 
     workspaces {
       # expecting workspace through env variable TF_WORKSPACE
+      name = "partnerworld"
     }
   }
   required_providers {
