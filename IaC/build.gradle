@@ -34,6 +34,9 @@ tasks.register('terraformApply', Exec) {
     description = "Apply Terraform"
     workingDir terraformDirectory
     commandLine 'terraform', 'apply', "--var-file=${terraformVarsFile}"
+    standardInput = System.in
+    standardOutput = System.out
+    errorOutput = System.err
     doFirst {
         environment "TF_WORKSPACE", tf_workspace
     }
