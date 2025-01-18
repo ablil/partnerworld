@@ -57,7 +57,7 @@ resource "google_cloud_run_v2_service" "partnerworld" {
 
 // pubsub related resources
 resource "google_pubsub_topic" "partner_configurations_topic" {
-  name                       = "partner-configurations"
+  name                       = "partners-configurations-${var.env}"
   message_retention_duration = "3600s"
   schema_settings {
     schema   = google_pubsub_schema.configuration_schema.id
@@ -68,7 +68,7 @@ resource "google_pubsub_topic" "partner_configurations_topic" {
 }
 
 resource "google_pubsub_schema" "configuration_schema" {
-  name       = "partnerconfiguration"
+  name       = "partner-configuration-${var.env}"
   type       = "AVRO"
   definition = <<EOF
     {
@@ -89,7 +89,7 @@ resource "google_pubsub_schema" "configuration_schema" {
 }
 
 resource "google_pubsub_subscription" "partner_pull_subscription" {
-  name  = "partner-configuration"
+  name  = "partners-configurations-${var.env}"
   topic = google_pubsub_topic.partner_configurations_topic.id
 
   message_retention_duration = "1200s" # 20 minutes
