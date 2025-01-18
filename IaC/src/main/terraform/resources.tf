@@ -1,7 +1,7 @@
 resource "google_artifact_registry_repository" "ghcr" {
   location      = var.region
-  repository_id = "ghcr-${var.env}"
-  description   = "Docker images registy for ${var.env}"
+  repository_id = "ghcr"
+  description   = "Docker images registry "
   format        = "DOCKER"
   mode          = "REMOTE_REPOSITORY"
 
@@ -15,7 +15,7 @@ resource "google_artifact_registry_repository" "ghcr" {
 
 resource "google_firestore_database" "database" {
   project         = var.project_id
-  name            = "partnerworld-${var.env}"
+  name            = "partnerworld"
   location_id     = var.region
   type            = "DATASTORE_MODE"
   deletion_policy = "DELETE"
@@ -23,7 +23,7 @@ resource "google_firestore_database" "database" {
 
 
 resource "google_cloud_run_v2_service" "partnerworld" {
-  name                = "partnerworld-${var.env}"
+  name                = "partnerworld"
   location            = var.region
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
@@ -41,7 +41,7 @@ resource "google_cloud_run_v2_service" "partnerworld" {
       }
       env {
         name  = "SPRING_PROFILES_ACTIVE"
-        value = "cloud,${var.env}"
+        value = "cloud"
       }
       env {
         name  = "subscription"
@@ -57,7 +57,7 @@ resource "google_cloud_run_v2_service" "partnerworld" {
 
 // pubsub related resources
 resource "google_pubsub_topic" "partner_configurations_topic" {
-  name                       = "partners-configurations-${var.env}"
+  name                       = "partners-configurations"
   message_retention_duration = "3600s"
   schema_settings {
     schema   = google_pubsub_schema.configuration_schema.id
@@ -68,7 +68,7 @@ resource "google_pubsub_topic" "partner_configurations_topic" {
 }
 
 resource "google_pubsub_schema" "configuration_schema" {
-  name       = "partner-configuration-${var.env}"
+  name       = "partner-configuration"
   type       = "AVRO"
   definition = <<EOF
     {
@@ -89,7 +89,7 @@ resource "google_pubsub_schema" "configuration_schema" {
 }
 
 resource "google_pubsub_subscription" "partner_pull_subscription" {
-  name  = "partners-configurations-${var.env}"
+  name  = "partners-configurations"
   topic = google_pubsub_topic.partner_configurations_topic.id
 
   message_retention_duration = "1200s" # 20 minutes

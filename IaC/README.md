@@ -31,16 +31,6 @@ To get full list of available task, run:
 ./gradlew tasks
 ```
 
-## Project properties
-
-The Gradle project can be tweaked through the following properties:
-
-| property | description                             |
-|----------|-----------------------------------------|
-| env      | `development` (default) or `production` |
-
-eg, `./gradlew terraformPlan -Penvironment=production`
-
 # GitHub workflows
 
 A GitHub workflow has been configured to automatically deploy/update all the resources when a new commit is pushed to

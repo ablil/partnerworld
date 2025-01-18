@@ -12,18 +12,17 @@ on:
 
 env:
   SERVICE_NAME: partnerworld
-  ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
   DOCKER_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.head_ref }}
 
   TF_CLOUD_ORGANIZATION: ablil-org
-  TF_WORKSPACE: ${{  github.ref == 'refs/heads/main' && 'partnerworld-production' || 'partnerworld-development' }}
+  TF_WORKSPACE: partnerworld
   TF_API_TOKEN: ${{ secrets.HCP_TERRAFORM_API_KEY }}
 
   GCP_PROJECT_ID: gcp-training-playground-405915
   GCP_REGION: europe-west3
 
 jobs:
-  build:
+  gradle-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,40 +36,44 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
+    environment:
+      name: terraform-run
+      url: ${{ steps.plan.outputs.run_link }}
     defaults:
       run:
         working-directory: IaC/src/main/terraform
     steps:
       - uses: actions/checkout@v4
-      # Workaround to pass tfvars to terraform actions below
-      - run: cp ${{ github.workspace }}/IaC/src/main/environments/$ENVIRONMENT.auto.tfvars ${{ github.workspace }}/IaC/src/main/terraform/terraform.tfvars
       - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
         id: plan
         with:
           workspace: ${{ env.TF_WORKSPACE }}
+          plan_only: ${{ github.ref != 'refs/heads/main' }}
       - uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.2
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           run: ${{ steps.plan.outputs.run_id }}
           comment: 'Apply run from Github workflow ${{ github.sha }}'
 
 
-  deploy:
+  cloudrun-deployment:
     runs-on: ubuntu-latest
-    needs: [build, terraform]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [gradle-build, terraform]
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
-      url: ${{ fromJson(steps.out.outputs.outputs).cloudrun_url }}
+      name: cloudrun
+      url: ${{ steps.cloudrun.outputs.cloudrun_url }}
     steps:
       - uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - uses: 'google-github-actions/setup-gcloud@v2'
       - run: |
-          gcloud run services update $SERVICE_NAME-$ENVIRONMENT \
+          gcloud run services update $SERVICE_NAME \
             --project=$GCP_PROJECT_ID \
             --region=$GCP_REGION \
-            --image=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/ghcr-$ENVIRONMENT/ablil/$SERVICE_NAME:$DOCKER_TAG
-      - uses: hashicorp/tfc-workflows-github/actions/workspace-output@v1.3.2
-        id: out
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
+            --image=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/ghcr/ablil/$SERVICE_NAME:$DOCKER_TAG
+      - id: cloudrun
+        run: |
+          url=$(gcloud run services $SERVICE_NAME --region=$GCP_REGION --project=$GCP_PROJECT --format=json | jq '.status.url')
+          echo "cloudrun_url=$url" >> $GITHUB_OUTPUT
