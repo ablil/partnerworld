@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "Avro",
+  "fields": [
+    {
+      "name": "shortName",
+      "type": "string"
+    },
+    {
+      "name": "displayName",
+      "type": "string"
+    }
+  ]
+}
