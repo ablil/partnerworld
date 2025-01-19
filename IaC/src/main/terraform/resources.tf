@@ -70,22 +70,7 @@ resource "google_pubsub_topic" "partner_configurations_topic" {
 resource "google_pubsub_schema" "configuration_schema" {
   name       = "partner-configuration"
   type       = "AVRO"
-  definition = <<EOF
-    {
-     "type" : "record",
-     "name" : "Avro",
-     "fields" : [
-       {
-         "name" : "shortName",
-         "type" : "string"
-       },
-       {
-         "name" : "displayName",
-         "type" : "string"
-       }
-     ]
-    }
-  EOF
+  definition = file("${path.module}/avro/partner-configuration.avsc")
 }
 
 resource "google_pubsub_subscription" "partner_pull_subscription" {
