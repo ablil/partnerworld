@@ -9,6 +9,11 @@
     {
       "name": "displayName",
       "type": "string"
+    },
+    {
+      "name": "tenant",
+      "type": "string",
+      "default": "de"
     }
   ]
 }

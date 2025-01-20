@@ -17,14 +17,14 @@ class ConfigurationWebservice(
 ) : ConfigurationApi {
     val logger by logger()
 
-    override fun deleteConfiguration(shortname: String): ResponseEntity<Unit> {
+    override fun deleteConfiguration(shortname: String, xTenant: String): ResponseEntity<Unit> {
         logger.debug("Deleting configuration $shortname")
         val configuration = repository.findByShortnameAndStatus(shortname) ?: return ResponseEntity.noContent().build()
         repository.save(configuration.copy(status = ConfigurationStatus.DISABLED))
         return ResponseEntity.noContent().build()
     }
 
-    override fun getAllConfigurations(page: Int, size: Int): ResponseEntity<GetAllConfigurations200ResponseDto> {
+    override fun getAllConfigurations(page: Int, size: Int, xTenant: String): ResponseEntity<GetAllConfigurations200ResponseDto> {
         logger.info("Got request to fetch configurations, page={}, size={}", page, size)
         val result = repository.findAllByStatus(ConfigurationStatus.ENABLED, PageRequest.of(page - 1, size))
         return ResponseEntity.ok(
@@ -40,7 +40,7 @@ class ConfigurationWebservice(
         )
     }
 
-    override fun getConfiguration(shortname: String): ResponseEntity<ConfigurationDto> {
+    override fun getConfiguration(shortname: String, xTenant: String): ResponseEntity<ConfigurationDto> {
         logger.info("Got request to get configuration {}", shortname)
         return repository.findByShortnameAndStatus(shortname)?.let { ResponseEntity.ok(ConfigurationMapper.to(it)) }
             ?: ResponseEntity.notFound().build()

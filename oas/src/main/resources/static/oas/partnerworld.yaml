@@ -19,6 +19,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Tenant'
       responses:
         200:
           description: list all enabled configurations
@@ -40,6 +41,7 @@ paths:
       tags: ['configuration']
       parameters:
         - $ref: '#/components/parameters/PartnerShortname'
+        - $ref: '#/components/parameters/Tenant'
       responses:
         200:
           description: partner configuration
@@ -54,16 +56,13 @@ paths:
       tags: ['configuration']
       parameters:
         - $ref: '#/components/parameters/PartnerShortname'
+        - $ref: '#/components/parameters/Tenant'
       responses:
         204:
           description: no content
 
 components:
   schemas:
-    ConfigurationStatus:
-      type: string
-      enum: ['ENABLED', 'DISABLED']
-      readOnly: true
     ConfigurationMetadata:
       type: object
       required: ['shortName']
@@ -198,3 +197,12 @@ components:
         maximum: 200
         type: integer
         default: 100
+    Tenant:
+      name: x-tenant
+      in: header
+      description: tenant
+      example: 'de'
+      schema:
+        type: string
+        enum: ['de', 'at', 'it', 'pl']
+        default: 'de'

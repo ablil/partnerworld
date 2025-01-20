@@ -8,12 +8,13 @@ from google.cloud import pubsub_v1
 import json
 
 project_id = 'gcp-training-playground-405915'
-topic = 'partner-configurations'
+topic = 'partners-configurations'
 
 def generate_message() -> dict:
     sample = {
         "displayName": ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
-        "shortName": f"lp{random.randint(0, 100)}"
+        "shortName": f"lp{random.randint(0, 100)}",
+        "tenant": "de"
     }
     return sample
 

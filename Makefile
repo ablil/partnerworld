@@ -18,7 +18,7 @@ runCloud: clean
 
 emulators:
 	docker compose up -d  && \
-		PUBSUB_EMULATOR_HOST=localhost:8085 PUBSUB_PROJECT_ID=myproject python scripts/emulators/pubsub/setup.py myproject partner-configurations partner-configuration
+		PUBSUB_EMULATOR_HOST=localhost:8085 PUBSUB_PROJECT_ID=myproject python scripts/emulators/pubsub/setup.py myproject partners-configurations partners-configurations
 
 run: emulators clean
 	SPRING_PROFILES_ACTIVE=emulator JAVA_HOME=$(JAVA_HOME) ./gradlew bootRun
