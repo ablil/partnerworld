@@ -32,9 +32,11 @@ A Docker image is configured and exposed on port 8085:
 docker compose up -d pubsub
 ```
 
-To create a topic and and a pull subscription, run:
+To create a topic and a pull subscription, run:
 ```shell
 python scripts/emulators/pubsub/setup.py <project_id> <topic_id> <subscription_id>
+# or when running the emulator
+PUBSUB_EMULATOR_HOST=localhost:8085 python scripts/emulators/pubsub/setup.py <project_id> <topic_id> <subscription_id>
 ```
 or you can run a Makefile target that run all the container and create sample topic/subscription for you:
 ```shell

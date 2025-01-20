@@ -1,9 +1,11 @@
 package io.ablil.configuration.persistence
 
+import com.google.cloud.spring.autoconfigure.datastore.DatastoreNamespaceProvider
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreAuditing
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories
 import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import io.ablil.configuration.persistence.repositories.ConfigurationRepository
+import io.ablil.configuration.utils.TenantUtils
 import io.ablil.configuration.utils.logger
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.context.annotation.RequestScope
 import java.util.*
 import org.springframework.boot.CommandLineRunner
+import org.springframework.context.annotation.Profile
 
 @Configuration
 @EnableDatastoreRepositories
@@ -32,10 +35,16 @@ class DatastoreConfiguration {
     }
 
     @Bean
+    fun getNamespaceProvider(): DatastoreNamespaceProvider = DatastoreNamespaceProvider { TenantUtils.getTenant() }
+
+
+    @Bean
     fun databaseSeeder(repository: ConfigurationRepository): CommandLineRunner = CommandLineRunner {
-        repository.deleteAll()
-        repository.saveAll(List(10) { PartnerConfiguration.createRandom() })
-        logger.info("created 10 random configurations")
+        TenantUtils.run("de") {
+            repository.deleteAll()
+            repository.saveAll(List(10) { PartnerConfiguration.createRandom() })
+            logger.info("created 10 random configurations")
+        }
     }
 
 }
