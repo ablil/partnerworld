@@ -40,7 +40,6 @@ class ConfigurationWebservice(
         )
     }
 
-    // TODO: do something
     override fun getConfiguration(shortname: String, xTenant: String): ResponseEntity<ConfigurationDto> {
         logger.info("Got request to get configuration {}", shortname)
         return repository.findByShortnameAndStatus(shortname)?.let { ResponseEntity.ok(ConfigurationMapper.to(it)) }
