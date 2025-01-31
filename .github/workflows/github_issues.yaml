@@ -26,5 +26,5 @@ jobs:
     # TODO: add this as an example to dotfiles repository
       - uses: ablil/dotfiles/git/actions/todos2issues@master
         with:
-          left_ref: ${{ steps.base.outputs.BASE_SHA }}
+          left_ref: $BASE_SHA
           right_ref: HEAD
