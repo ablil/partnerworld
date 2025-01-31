@@ -1,11 +1,7 @@
 name: convert TODOs to Github issues
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [main, master]
   push:
-    branches: [main, master]
 
 permissions: write-all
 
@@ -14,7 +10,6 @@ env:
 
 jobs:
   main:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,22 +20,3 @@ jobs:
         with:
           left_ref: HEAD^
           right_ref: HEAD
-
-  pull-request:
-    if: github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Identify Base SHA
-        id: base
-        run: |
-          BASE_SHA=$(git merge-base origin/${{ github.event.pull_request.base.ref }} origin/${{ github.event.pull_request.head.ref }})
-          echo "ref=$BASE_SHA" >> $GITHUB_OUTPUT
-
-      - uses: ablil/dotfiles/git/actions/todos2issues@master
-        with:
-          left_ref: ${{ github.sha }}
-          right_ref: main
