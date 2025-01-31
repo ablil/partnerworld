@@ -19,5 +19,5 @@ jobs:
 
       - uses: ablil/dotfiles/git/actions/todos2issues@master
         with:
-          left_ref: HEAD^
-          right_ref: HEAD
+          left_ref: ${{ github.base_ref }}
+          right_ref: ${{ github.head_ref }}
