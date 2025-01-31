@@ -78,8 +78,8 @@ resource "google_pubsub_subscription" "partner_pull_subscription" {
   topic = google_pubsub_topic.partner_configurations_topic.id
 
   message_retention_duration = "1200s" # 20 minutes
-  retain_acked_messages = true
-  ack_deadline_seconds  = 10
+  retain_acked_messages      = true
+  ack_deadline_seconds       = 10
 
   expiration_policy {
     ttl = "604800s" # 7 days
@@ -90,5 +90,5 @@ resource "google_pubsub_subscription" "partner_pull_subscription" {
   }
 
   enable_message_ordering = false
-  depends_on = [google_pubsub_topic.partner_configurations_topic]
+  depends_on              = [google_pubsub_topic.partner_configurations_topic]
 }

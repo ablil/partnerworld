@@ -1,17 +1,20 @@
 variable "gcp_credentials" {
-    type = string
-    description = "gcp credentials setup through HCP terraform workspace variable"
-    sensitive = true
+  type        = string
+  description = "gcp credentials setup through HCP terraform workspace variable"
+  sensitive   = true
 }
 
 variable "project_id" {
-    type = string
-    default = "gcp-training-playground-405915"
+  type    = string
+  default = "gcp-training-playground-405915"
 }
 
 variable "region" {
-    type = string
-    default = "europe-west3"
+  type    = string
+  default = "europe-west3"
 }
 
-
+variable "service_name" {
+  type    = string
+  default = "partnerworld"
+}
