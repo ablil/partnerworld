@@ -27,4 +27,4 @@ jobs:
       - uses: ablil/dotfiles/git/actions/todos2issues@master
         with:
           left_ref: ${{ steps.base.outputs.BASE_SHA }}
-          right_ref: ${{ github.head_ref }}
+          right_ref: HEAD
