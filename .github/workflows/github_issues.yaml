@@ -17,4 +17,7 @@ jobs:
         with:
           fetch-depth: '2'
 
-      - run: bash scripts.sh
+      - uses: ablil/dotfiles/git/actions/todos2issues@master
+        with:
+          left_ref: HEAD^
+          right_ref: HEAD
