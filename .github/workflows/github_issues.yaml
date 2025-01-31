@@ -1,0 +1,16 @@
+name: convert TODOs to Github issues
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '2'
+
+      - run: git diff HEAD^ HEAD
