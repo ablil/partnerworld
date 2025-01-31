@@ -2,16 +2,33 @@ name: convert TODOs to Github issues
 
 on:
   pull_request:
-    branches:
-      - main
+    types: [closed]
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+permissions: write-all
 
 env:
   GH_TOKEN: ${{ github.token }}
 
 jobs:
   main:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: ablil/dotfiles/git/actions/todos2issues@master
+        with:
+          left_ref: HEAD^
+          right_ref: HEAD
+
+  pull-request:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,10 +38,9 @@ jobs:
         id: base
         run: |
           BASE_SHA=$(git merge-base origin/${{ github.event.pull_request.base.ref }} origin/${{ github.event.pull_request.head.ref }})
-          echo "BASE_SHA=$BASE_SHA" >> $GITHUB_ENV
+          echo "ref=$BASE_SHA" >> $GITHUB_OUTPUT
 
-    # TODO: add this as an example to dotfiles repository
       - uses: ablil/dotfiles/git/actions/todos2issues@master
         with:
-          left_ref: $BASE_SHA
+          left_ref: ${{ steps.base.outputs.ref }}
           right_ref: HEAD
