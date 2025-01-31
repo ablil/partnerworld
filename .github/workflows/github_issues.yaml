@@ -15,8 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '2'
+          fetch-depth: 0
 
+    # TODO: add this as an example to dotfiles repository
       - uses: ablil/dotfiles/git/actions/todos2issues@master
         with:
           left_ref: ${{ github.base_ref }}
