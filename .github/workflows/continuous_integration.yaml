@@ -45,6 +45,8 @@ jobs:
         working-directory: IaC/src/main/terraform
     steps:
       - uses: actions/checkout@v4
+      - name: Copy avro schemas to terraform subproject
+        run: cp ${{ github.workspace }}/avro/src/main/avro/*.avsc ${{ github.workspace }}/IaC/src/main/terraform/avro
       - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
         id: plan
         with:

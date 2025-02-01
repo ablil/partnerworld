@@ -1,6 +1,7 @@
 {
   "type": "record",
-  "name": "Avro",
+  "name": "NewPartnerMessage",
+  "namespace": "io.ablil.avro",
   "fields": [
     {
       "name": "shortName",

@@ -16,20 +16,15 @@ Make sure you also have a gcp account.
 
 # Get started
 
-Some basic Gradle tasks are configured to interact with Terraform.
+Some basic targets are configured to interact with Terraform through Makefile.
 
-| task                      | description      |
-|---------------------------|------------------|
-| ./gradlew terraformInit   | terraform init   |
-| ./gradlew terraformPlan   | terraform plan   |
-| ./gradlew terraformApply  | terraform apply  |
-| ./gradlew terraformOutput | terraform output |
+| task       | description                                          |
+|------------|------------------------------------------------------|
+| make init  | terraform init                                       |
+| make plan  | terraform plan                                       |
+| make plan  | terraform apply                                      |
+| make .avro | copy avro schemas from avro submodule to this module |
 
-To get full list of available task, run:
-
-```shell
-./gradlew tasks
-```
 
 # GitHub workflows
 
@@ -41,3 +36,11 @@ Make sure the following secrets are configured:
 | secret                | description                              |
 |-----------------------|------------------------------------------|
 | HCP_TERRAFORM_API_KEY | used to authenticated with HCP terraform |
+
+
+# Avro schemas
+Since avro schema files need to be upload to HCP terraform as part of the terraform source code, a Makefile target is configured to copy 
+all avro schemas from avro submodule to this module.
+```shell
+make .avro
+```
