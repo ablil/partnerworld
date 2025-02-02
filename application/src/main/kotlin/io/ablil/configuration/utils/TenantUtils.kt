@@ -3,12 +3,15 @@ package io.ablil.configuration.utils
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 
+const val TENANT_HEADER = "x-tenant"
+const val DEFAULT_TENANT = "de"
+
 object TenantUtils {
 
-    private val currentTenant = ThreadLocal<String>()
+    val currentTenant = ThreadLocal<String>()
 
     fun getTenant(): String =
-        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request?.getHeader("x-tenant")
+        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request?.getHeader(TENANT_HEADER)
             ?.also { currentTenant.set(it) }
             ?: currentTenant.get()
             ?: throw IllegalStateException("Missing tenant")
