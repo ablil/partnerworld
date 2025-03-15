@@ -34,6 +34,7 @@ jobs:
           cache: gradle
       - run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITHUB_TOKEN }}
       - run: ./gradlew build -x test -Ptag=$DOCKER_TAG
+      - run: echo '# Hello world' >> $GITHUB_STEP_SUMMARY
 
   terraform:
     runs-on: ubuntu-latest
