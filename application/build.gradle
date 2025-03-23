@@ -79,3 +79,9 @@ springBoot {
 gitProperties {
     branch = System.getenv('GITHUB_REF_NAME')
 }
+
+detekt {
+    reports {
+        sarif.required = true
+    }
+}
