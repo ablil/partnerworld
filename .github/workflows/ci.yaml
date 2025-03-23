@@ -35,6 +35,18 @@ jobs:
           cache: gradle
       - run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITHUB_TOKEN }}
       - run: ./gradlew build -x test -Ptag=$DOCKER_TAG
+      - name: Upload SARIF file
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: application/build/reports/detekt/detekt.sarif
+          # Optional category for the results
+          # Used to differentiate multiple results for one commit
+          category: detekt
+      - run: cat application/build/reports/detekt/detekt.md >> $GITHUB_STEP_SUMMARY
+        if: always()
+
 
   terraform:
     if: false
