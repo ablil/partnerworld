@@ -37,6 +37,7 @@ jobs:
       - run: ./gradlew build -x test -Ptag=$DOCKER_TAG
 
   terraform:
+    if: false
     runs-on: ubuntu-latest
     environment:
       name: terraform-run
@@ -60,7 +61,8 @@ jobs:
 
   cloudrun-deployment:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
+    #if: ${{ github.ref == 'refs/heads/main' }}
+    if: false
     needs: [gradle-build, terraform]
     environment:
       name: cloudrun
