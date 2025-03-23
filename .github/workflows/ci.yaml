@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: git fetch origin main # remote origin is being reference by spotless for ratchet formatting
       - uses: actions/setup-java@v4.6.0
         with:
           java-version: 17
