@@ -11,11 +11,12 @@ object TenantUtils {
     val currentTenant = ThreadLocal<String>()
 
     fun getTenant(): String =
-        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request?.getHeader(TENANT_HEADER)
+        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)
+            ?.request
+            ?.getHeader(TENANT_HEADER)
             ?.also { currentTenant.set(it) }
             ?: currentTenant.get()
             ?: throw IllegalStateException("Missing tenant")
-
 
     fun run(tenant: String, callback: () -> Unit) = run {
         val originalTenant = currentTenant.get()

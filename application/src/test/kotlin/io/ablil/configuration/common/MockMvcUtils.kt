@@ -9,5 +9,6 @@ object MockMvcUtils {
 
     fun buildMockMvc(applicationContext: WebApplicationContext): MockMvc =
         MockMvcBuilders.webAppContextSetup(applicationContext)
-            .apply<DefaultMockMvcBuilder>(TenantHeaderConfigurer()).build()
+            .apply<DefaultMockMvcBuilder>(TenantHeaderConfigurer())
+            .build()
 }

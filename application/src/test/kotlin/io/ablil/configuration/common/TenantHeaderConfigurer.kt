@@ -11,11 +11,10 @@ class TenantHeaderConfigurer : MockMvcConfigurer {
 
     override fun beforeMockMvcCreated(
         builder: ConfigurableMockMvcBuilder<*>,
-        context: WebApplicationContext
+        context: WebApplicationContext,
     ): RequestPostProcessor {
         return RequestPostProcessor { request ->
             request.also { it.addHeader(TENANT_HEADER, DEFAULT_TENANT) }
         }
     }
-
 }

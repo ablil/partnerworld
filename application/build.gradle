@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.24'
     id 'com.google.cloud.tools.jib' version '3.4.4'
     id "com.gorylenko.gradle-git-properties" version "2.4.2" // TODO: maybe this should be iin root module
+    id "com.diffplug.spotless" version '7.0.2'
 }
 
 version = '0.0.1'
@@ -45,6 +46,12 @@ kotlin {
 }
 
 tasks {
+    spotless {
+        kotlin {
+            ktfmt('0.54').kotlinlangStyle()
+        }
+    }
+
     test {
         systemProperty("spring.profiles.active", "test")
         useJUnitPlatform()
@@ -78,3 +85,4 @@ springBoot {
 gitProperties {
     branch = System.getenv('GITHUB_REF_NAME')
 }
+

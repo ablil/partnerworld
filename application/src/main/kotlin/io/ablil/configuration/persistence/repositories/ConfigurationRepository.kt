@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.cache.annotation.Caching
 import org.springframework.context.annotation.Primary
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,19 +17,22 @@ import org.springframework.stereotype.Repository
 @Repository("configurationRepository")
 interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Long> {
 
-
     fun findByShortnameAndStatus(
         shortname: String,
-        status: ConfigurationStatus = ConfigurationStatus.ENABLED
+        status: ConfigurationStatus = ConfigurationStatus.ENABLED,
     ): PartnerConfiguration?
 
+    fun findAllByStatus(
+        status: ConfigurationStatus = ConfigurationStatus.ENABLED,
+        pageable: Pageable,
+    ): Page<PartnerConfiguration>
 
-    fun findAllByStatus(status: ConfigurationStatus = ConfigurationStatus.ENABLED, pageable: Pageable): Page<PartnerConfiguration>
-
-    @Query("select * from configurations where (shortname = @shortname OR metadata.shortname = @shortname ) AND status = @status ")
+    @Query(
+        "select * from configurations where (shortname = @shortname OR metadata.shortname = @shortname ) AND status = @status "
+    )
     fun queryByShortnameAndStatus(
         @Param("shortname") shortname: String,
-        @Param("status") status: ConfigurationStatus = ConfigurationStatus.ENABLED
+        @Param("status") status: ConfigurationStatus = ConfigurationStatus.ENABLED,
     ): PartnerConfiguration?
 }
 
@@ -38,18 +40,22 @@ interface ConfigurationRepository : DatastoreRepository<PartnerConfiguration, Lo
 @Primary
 class ConfigurationRepositoryDecorator(
     val cacheManager: CacheManager,
-    @Qualifier("configurationRepository") private val repository: ConfigurationRepository
-) :
-    ConfigurationRepository by repository {
+    @Qualifier("configurationRepository") private val repository: ConfigurationRepository,
+) : ConfigurationRepository by repository {
 
     @Cacheable("configurations", key = "#shortname", unless = "#result == null")
-    override fun queryByShortnameAndStatus(shortname: String, status: ConfigurationStatus): PartnerConfiguration? {
+    override fun queryByShortnameAndStatus(
+        shortname: String,
+        status: ConfigurationStatus,
+    ): PartnerConfiguration? {
         return repository.queryByShortnameAndStatus(shortname, status)
     }
 
     @CacheEvict("configurations", key = "#entity.shortname")
     override fun <S : PartnerConfiguration?> save(entity: S & Any): S & Any {
-        return repository.save(entity).also { it.metadata?.forEach { m -> evictCache(m.shortname) } }
+        return repository.save(entity).also {
+            it.metadata?.forEach { m -> evictCache(m.shortname) }
+        }
     }
 
     @CacheEvict("configurations", key = "#entity.shortname")

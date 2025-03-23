@@ -13,18 +13,19 @@ import org.springframework.context.annotation.Configuration
 class PubSubConfiguration {
 
     @Bean
-    fun pubSubMessageConverter(): PubSubMessageConverter = JacksonPubSubMessageConverter(ObjectMapper())
+    fun pubSubMessageConverter(): PubSubMessageConverter =
+        JacksonPubSubMessageConverter(ObjectMapper())
 
     @Bean
     fun subscribeToTopic(
         pubsubTemplate: PubSubTemplate,
         @Value("\${custom.pubsub.subscription}") subscription: String,
-        partnerConfigurationMessageConsumer: PartnerConfigurationMessageConsumer
+        partnerConfigurationMessageConsumer: PartnerConfigurationMessageConsumer,
     ): CommandLineRunner = CommandLineRunner {
         pubsubTemplate.subscribeAndConvert(
             subscription,
             partnerConfigurationMessageConsumer,
-            PartnerConfigurationMessage::class.java
+            PartnerConfigurationMessage::class.java,
         )
     }
 }

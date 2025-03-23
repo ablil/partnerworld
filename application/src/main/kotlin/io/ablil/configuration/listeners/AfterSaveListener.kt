@@ -13,21 +13,23 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConditionalOnProperty(value = ["custom.auditing.enabled"], havingValue = "true")
-class AfterSaveListener(val repository: ConfigurationHistoryRepository, val objectMapper: ObjectMapper) :
-    ApplicationListener<AfterSaveEvent> {
+class AfterSaveListener(
+    val repository: ConfigurationHistoryRepository,
+    val objectMapper: ObjectMapper,
+) : ApplicationListener<AfterSaveEvent> {
 
     val logger by logger()
 
-
     override fun onApplicationEvent(event: AfterSaveEvent) {
         logger.debug("after save event {}", event)
-        val changes = event.targetEntities.filterIsInstance<PartnerConfiguration>().map {
-            ConfigurationHistoryChange(
-                eventType = EventType.CREATE_UPDATE,
-                configuration = objectMapper.writeValueAsString(it),
-                configurationId = requireNotNull(it.id)
-            )
-        }
+        val changes =
+            event.targetEntities.filterIsInstance<PartnerConfiguration>().map {
+                ConfigurationHistoryChange(
+                    eventType = EventType.CREATE_UPDATE,
+                    configuration = objectMapper.writeValueAsString(it),
+                    configurationId = requireNotNull(it.id),
+                )
+            }
         repository.saveAll(changes)
     }
 }

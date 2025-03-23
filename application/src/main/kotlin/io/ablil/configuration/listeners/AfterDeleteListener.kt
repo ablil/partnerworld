@@ -21,13 +21,14 @@ class AfterDeleteListener(val historyRepository: ConfigurationHistoryRepository)
         logger.debug("after delete event {}", event)
         if (isSupportedEntity(event)) {
             val configurationIds: List<Long> = extractConfigurationIds(event)
-            val changes = configurationIds.map {
-                ConfigurationHistoryChange(
-                    configurationId = it,
-                    configuration = null,
-                    eventType = EventType.DELETE
-                )
-            }
+            val changes =
+                configurationIds.map {
+                    ConfigurationHistoryChange(
+                        configurationId = it,
+                        configuration = null,
+                        eventType = EventType.DELETE,
+                    )
+                }
             historyRepository.saveAll(changes)
         }
     }
@@ -37,8 +38,8 @@ class AfterDeleteListener(val historyRepository: ConfigurationHistoryRepository)
     }
 
     private fun isSupportedEntity(event: AfterDeleteEvent): Boolean {
-        return PartnerConfiguration::class.java.isAssignableFrom(event.optionalTargetEntityClass.get())
+        return PartnerConfiguration::class
+            .java
+            .isAssignableFrom(event.optionalTargetEntityClass.get())
     }
-
-
 }

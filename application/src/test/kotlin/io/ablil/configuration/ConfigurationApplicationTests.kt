@@ -23,11 +23,9 @@ private const val BASE_PATH = "/v1/configurations"
 @ExtendWith(TenantSetup::class)
 class ConfigurationApplicationTests {
 
-    @Autowired
-    private lateinit var webApplicationContext: WebApplicationContext
+    @Autowired private lateinit var webApplicationContext: WebApplicationContext
 
-    @Autowired
-    lateinit var repository: ConfigurationRepository
+    @Autowired lateinit var repository: ConfigurationRepository
 
     lateinit var mvc: MockMvc
 

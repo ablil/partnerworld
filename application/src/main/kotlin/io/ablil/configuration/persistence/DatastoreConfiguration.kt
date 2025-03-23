@@ -7,16 +7,12 @@ import io.ablil.configuration.persistence.entities.PartnerConfiguration
 import io.ablil.configuration.persistence.repositories.ConfigurationRepository
 import io.ablil.configuration.utils.TenantUtils
 import io.ablil.configuration.utils.logger
-import jakarta.servlet.http.HttpServletRequest
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import java.util.*
+import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
 import org.springframework.stereotype.Component
-import org.springframework.web.context.annotation.RequestScope
-import java.util.*
-import org.springframework.boot.CommandLineRunner
-import org.springframework.context.annotation.Profile
 
 @Configuration
 @EnableDatastoreRepositories
@@ -31,12 +27,12 @@ class DatastoreConfiguration {
         override fun getCurrentAuditor(): Optional<String> {
             return Optional.of("system")
         }
-
     }
 
     @Bean
-    fun getNamespaceProvider(): DatastoreNamespaceProvider = DatastoreNamespaceProvider { TenantUtils.getTenant() }
-
+    fun getNamespaceProvider(): DatastoreNamespaceProvider = DatastoreNamespaceProvider {
+        TenantUtils.getTenant()
+    }
 
     @Bean
     fun databaseSeeder(repository: ConfigurationRepository): CommandLineRunner = CommandLineRunner {
@@ -46,5 +42,4 @@ class DatastoreConfiguration {
             logger.info("created 10 random configurations")
         }
     }
-
 }

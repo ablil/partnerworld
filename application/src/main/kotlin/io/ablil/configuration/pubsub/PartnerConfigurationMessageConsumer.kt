@@ -10,20 +10,28 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class PartnerConfigurationMessageConsumer(private val configurationRepository: ConfigurationRepository) :
-    Consumer<ConvertedBasicAcknowledgeablePubsubMessage<PartnerConfigurationMessage>> {
+class PartnerConfigurationMessageConsumer(
+    private val configurationRepository: ConfigurationRepository
+) : Consumer<ConvertedBasicAcknowledgeablePubsubMessage<PartnerConfigurationMessage>> {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun accept(message: ConvertedBasicAcknowledgeablePubsubMessage<PartnerConfigurationMessage>) {
+    override fun accept(
+        message: ConvertedBasicAcknowledgeablePubsubMessage<PartnerConfigurationMessage>
+    ) {
         logger.info("processing message", keyValue("message", message))
         val configuration = message.payload
 
         TenantUtils.run(configuration.tenant) {
-            configurationRepository.save(
-                PartnerConfiguration.createRandom()
-                    .copy(shortname = configuration.shortName, displayName = configuration.displayName)
-            ).also { logger.info("created configuration $it") }
+            configurationRepository
+                .save(
+                    PartnerConfiguration.createRandom()
+                        .copy(
+                            shortname = configuration.shortName,
+                            displayName = configuration.displayName,
+                        )
+                )
+                .also { logger.info("created configuration $it") }
         }
         message.ack()
     }
