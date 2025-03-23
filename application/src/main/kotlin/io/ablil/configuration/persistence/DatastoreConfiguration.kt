@@ -26,7 +26,7 @@ class DatastoreConfiguration {
     val logger by logger()
 
     @Component
-    inner class AuditorProvider() : AuditorAware<String> {
+    inner class AuditorProvider : AuditorAware<String> {
 
         override fun getCurrentAuditor(): Optional<String> {
             return Optional.of("system")
